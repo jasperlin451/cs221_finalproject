@@ -9,10 +9,11 @@ class Othello:
         self.validMoves = set()
         self.current = True
         self.current_score = 0
+
+        # intialize board state
         for x in range(n):
             for y in range(n):
                 self.board[(x,y)] = ' '
-        #starting
         self.board[(n/2-1, n/2-1)] = 'X'
         self.board[(n/2-1, n/2)] = 'O'
         self.board[(n/2, n/2-1)] = 'O'
@@ -48,9 +49,7 @@ class Othello:
                     continue
                 self.validMoves.add((i, j))
 
-    def score(self, spot):
-        return self.possiblyFlip(spot, False)
-    
+    # Helper function for possiblyFlip, dont need to call this individually
     def flipInDir(self, x, y, x_change, y_change, change, to_find, change_to):
         x += x_change
         y += y_change
@@ -73,6 +72,9 @@ class Othello:
             self.board[(x, y)] = change_to
         return flipped
 
+    # if change is True, it will flip the spots in addition to counting, if
+    # set to false, will simply return the number of tiles that would be
+    # flipped by the move
     def possiblyFlip(self, spot, change):
         flipped = 1
         to_find = 'X'
@@ -92,6 +94,11 @@ class Othello:
         flipped += self.flipInDir(x, y, 1, 1, change, to_find, self.board[spot])
         return flipped
 
+    # Call to move to the next turn
+    def nextTurn(self):
+        self.current = not self.current
+
+    # Called by findBestMove, don't call by itself (except by human)
     def executeMove(self, spot):
         self.validMoves.remove(spot)
         if self.current:
@@ -100,17 +107,20 @@ class Othello:
             self.board[spot] = 'O'
         self.possiblyFlip(spot, True)
 
-    def findBestMove(self):
+    # Generic function that takes in the scoring function to use
+    def findBestMove(self, scoringFunction):
         best = 0
         best_move = None
         # greedily selects the move resulting in the largest number of flipped tiles
         shuffled_moves = list(self.validMoves)
         shuffle(shuffled_moves)
         for play in shuffled_moves:
-            current_score = self.score(play)
+            current_score = scoringFunction(self, play)
             if current_score > best:
                 best = current_score
                 best_move = play
+            if not self.current:
+                break
 
         # play the best move
         self.executeMove(best_move)
@@ -120,9 +130,10 @@ class Othello:
         else:
             self.current_score -= best
 
-othello = Othello(4)
-othello.drawBoard()
-while len(othello.validMoves) != 0:
-    othello.findBestMove()
-    othello.current = not othello.current
-othello.drawBoard()
+def playFullGame(size, scoringFunction):
+    game = Othello(size) 
+    while len(game.validMoves) != 0:
+        game.findBestMove(scoringFunction)
+        game.current = not game.current
+    return int(game.current_score > 0)
+
