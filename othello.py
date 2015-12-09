@@ -3,12 +3,13 @@ import sys
 from time import sleep
 
 class Othello:
-    def __init__(self, n):
+    def __init__(self, n, states):
         self.board = {}
         self.size = n
         self.validMoves = set()
         self.current = True
         self.current_score = 0
+        self.stateCounter = states
 
         # intialize board state
         for x in range(n):
@@ -28,12 +29,12 @@ class Othello:
         START = '    '
         for i in range(self.size):
             HLINE += '+----'
-            START += str(i+1) + '    '
+            START += str(i) + '    '
         HLINE += '+'
         print START
         print HLINE
         for y in range(self.size):
-            print y + 1,
+            print y,
             for x in range(self.size):
                 print '| %s ' % (self.board[(x,y)]),
             print('|')
@@ -57,7 +58,7 @@ class Othello:
         # figure to flip in the current direction
         flipped = 0
         while (x, y) in self.board and self.board[(x, y)] == to_find:
-            flipped += 1
+            flipped += 2
             x += x_change
             y += y_change
         if (x, y) not in self.board or self.board[(x,y)] == ' ':
@@ -105,11 +106,15 @@ class Othello:
             self.board[spot] = 'X'
         else:
             self.board[spot] = 'O'
-        self.possiblyFlip(spot, True)
+        score_diff = self.possiblyFlip(spot, True)
+        if self.current:
+            self.current_score += score_diff
+        else:
+            self.current_score -= score_diff
 
     # Generic function that takes in the scoring function to use
     def findBestMove(self, scoringFunction):
-        best = 0
+        best = float("-inf")
         best_move = None
         # greedily selects the move resulting in the largest number of flipped tiles
         shuffled_moves = list(self.validMoves)
@@ -125,15 +130,34 @@ class Othello:
         # play the best move
         self.executeMove(best_move)
         self.addValidMoves(best_move)
-        if self.current:
-            self.current_score += best
-        else:
-            self.current_score -= best
 
-def playFullGame(size, scoringFunction):
-    game = Othello(size) 
+def playFullGame(states, size, sf1, sf2):
+    game = Othello(size, states) 
     while len(game.validMoves) != 0:
-        game.findBestMove(scoringFunction)
-        game.current = not game.current
-    return int(game.current_score > 0)
+        if (game.current):
+            game.findBestMove(sf1)
+        else:
+            game.findBestMove(sf2)
+        game.nextTurn()
+    return (int(game.current_score > 0), game.stateCounter)
+
+def playVersusHuman(size, sf):
+    game = Othello(size, dict())
+    while len(game.validMoves) != 0:
+        if (game.current):
+            game.findBestMove(sf)
+            game.drawBoard()
+        else:
+            print "Spot to play on:"
+            move = tuple(int(x.strip()) for x in raw_input().split(',')) 
+            game.executeMove(move)
+            game.addValidMoves(move)
+            game.drawBoard()
+        game.nextTurn()
+
+
+
+
+
+
 
