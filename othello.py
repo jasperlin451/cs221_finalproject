@@ -131,16 +131,6 @@ class Othello:
         self.executeMove(best_move)
         self.addValidMoves(best_move)
 
-def playFullGame(states, size, sf1, sf2):
-    game = Othello(size, states) 
-    while len(game.validMoves) != 0:
-        if (game.current):
-            game.findBestMove(sf1)
-        else:
-            game.findBestMove(sf2)
-        game.nextTurn()
-    return (int(game.current_score > 0), game.stateCounter)
-
 def playVersusHuman(size, sf):
     game = Othello(size, dict())
     while len(game.validMoves) != 0:

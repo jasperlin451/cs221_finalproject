@@ -28,7 +28,7 @@ def score(othello, spot):
         return 0
     return othello.stateCounter[boardHash][1] * 1.0 / othello.stateCounter[boardHash][0]
 
-# playVersusHuman(4, score)
+'''
 total = 0
 trials = 50
 states = dict()
@@ -45,3 +45,6 @@ for i in range(trials):
     states = game.stateCounter
     print total * 1.0 / (i+1)
 print total * 1.0 / trials
+
+playVersusHuman(4, score)
+'''
