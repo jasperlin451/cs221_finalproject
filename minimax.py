@@ -3,6 +3,7 @@ import greedy
 from copy import *
 from collections import *
 
+depth = 3
 def minimax(othello, cur_depth):
     if cur_depth == 0 or len(othello.validMoves) == 0:
         return othello.current_score
@@ -20,8 +21,8 @@ def score(othello, spot):
     simulation.executeMove(spot)
     return minimax(simulation, depth)
 
+'''
 total = 0
-depth = 2
 trials = 20
 for i in range(trials):
     game = Othello(6)
@@ -32,5 +33,4 @@ for i in range(trials):
             game.findBestMove(greedy.score)
     total += int(game.current_score > 0)
     print total * 1.0 / (i+1)
-
-playVersusHuman(4, score)
+'''

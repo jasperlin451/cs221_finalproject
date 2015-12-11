@@ -5,6 +5,7 @@ from time import sleep
 class Othello:
     def __init__(self, n, states=None):
         self.board = {}
+        self.pieces = 4
         self.size = n
         self.validMoves = set()
         self.current = True
@@ -101,6 +102,7 @@ class Othello:
 
     # Called by findBestMove, don't call by itself (except by human)
     def executeMove(self, spot):
+        self.pieces += 1
         self.validMoves.remove(spot)
         if self.current:
             self.board[spot] = 'X'
@@ -144,10 +146,5 @@ def playVersusHuman(size, sf):
             game.executeMove(move)
             game.addValidMoves(move)
             game.drawBoard()
-
-
-
-
-
 
 
