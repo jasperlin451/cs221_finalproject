@@ -3,6 +3,7 @@ from othello import *
 from copy import *
 from collections import *
 import greedy
+import minimax
 
 def simulate(othello, n):
     for i in range(n):
@@ -29,18 +30,17 @@ def score(othello, spot):
     return othello.stateCounter[boardHash][1] * 1.0 / othello.stateCounter[boardHash][0]
 
 total = 0
-trials = 50
+trials = 100
 states = dict()
 for i in range(trials):
     game = Othello(4, states) 
     while len(game.validMoves) != 0:
-        simulate(game, 10)
+        if i < 50: simulate(game, 10)
         if (game.current):
             game.findBestMove(score)
         else:
-            game.findBestMove(greedy.score)
+            game.findBestMove(minimax.score)
     total += int(game.current_score > 0)
     states = game.stateCounter
+    print total * 1.0 / (i+1)
 print total * 1.0 / trials
-
-playVersusHuman(4, score)

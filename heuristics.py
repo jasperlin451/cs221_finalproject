@@ -1,7 +1,7 @@
 from othello import *
 from copy import *
-import greedy
 import minimax
+import greedy
 
 def numCornerPieces(prev, spot):
     game = deepcopy(prev)
@@ -54,8 +54,8 @@ def scoreDifference(game, spot):
     return flipped * 1.0 / game.pieces
 
 corner_weight = 0.1
-mobility_weight = 0.2
-proximity_weight = 0.2
+mobility_weight = 0.4
+proximity_weight = 0.0
 flip_weight = 0.5
 def score(game, spot):
     if gameEnder(game, spot): return 1
@@ -67,9 +67,9 @@ def score(game, spot):
     return combined_score
 
 total = 0
-trials = 10
+trials = 50
 for i in range(trials):
-    game = Othello(6)
+    game = Othello(4)
     while len(game.validMoves) != 0:
         if (game.current):
             game.findBestMove(score)

@@ -1,5 +1,6 @@
 from othello import *
 import greedy
+import heuristics
 from copy import *
 from collections import *
 
@@ -25,12 +26,13 @@ def score(othello, spot):
 total = 0
 trials = 20
 for i in range(trials):
-    game = Othello(6)
+    game = Othello(4)
     while len(game.validMoves) != 0:
         if (game.current):
             game.findBestMove(score)
         else:
-            game.findBestMove(greedy.score)
+            game.findBestMove(heuristics.score)
     total += int(game.current_score > 0)
     print total * 1.0 / (i+1)
 '''
+playVersusHuman(4, score)
