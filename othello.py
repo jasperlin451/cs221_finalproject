@@ -3,7 +3,7 @@ import sys
 from time import sleep
 
 class Othello:
-    def __init__(self, n, states):
+    def __init__(self, n, states=None):
         self.board = {}
         self.size = n
         self.validMoves = set()
@@ -111,6 +111,7 @@ class Othello:
             self.current_score += score_diff
         else:
             self.current_score -= score_diff
+        self.nextTurn()
 
     # Generic function that takes in the scoring function to use
     def findBestMove(self, scoringFunction):
@@ -143,7 +144,6 @@ def playVersusHuman(size, sf):
             game.executeMove(move)
             game.addValidMoves(move)
             game.drawBoard()
-        game.nextTurn()
 
 
 
